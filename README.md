@@ -15,7 +15,7 @@ To create an Xcode project to work in Xcode run
 ## Running
 Run a command like
 
-`swift run -c release homepage -n localhost --c ~/Contents`
+`swift run -c release homepage -n localhost -c ~/Contents`
 
 For all options run swift run -c release homepage --help.
 
