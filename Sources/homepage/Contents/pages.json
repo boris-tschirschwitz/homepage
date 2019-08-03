@@ -1,0 +1,6 @@
+[
+    { "uri": "/", "text": "Hello World", "etag": "3", "contentType": "text/plain" },
+    { "uri": "/robots.txt", "text": "User-agent: *\nDisallow: /", "etag": "3", "contentType": "text/plain" },
+    { "uri": "/test", "text": "**Markdown** _text_.", "etag": "6", "contentType": "text/markdown" },
+    { "uri": "/testfile", "file": "testfile.md", "gzip": "testfile.md.gz", "etag": "7", "contentType": "text/markdown" }
+]
