@@ -9,6 +9,9 @@ Make sure at least Swift 5.0 is installed, either by installing Xcode on a Mac, 
 After cloning the project run
 `swift package update`
 
+To create an Xcode project to work in Xcode run
+`swift package generate-xcodeproj`
+
 ## Running
 Run a command like
 
