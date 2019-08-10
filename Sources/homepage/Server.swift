@@ -60,14 +60,15 @@ class Server: Database {
 }
 
 enum ContentType: String, Decodable {
-    case plain = "text/plain"
+    case html = "text/html"
     case markdown = "text/markdown"
+    case plain = "text/plain"
 }
 
 extension ContentType {
     var options: String {
         switch self {
-        case .plain, .markdown: return "; charset=utf-8"
+        case .html, .markdown, .plain: return "; charset=utf-8"
         }
     }
 
