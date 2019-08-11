@@ -3,5 +3,8 @@
     { "uri": "/robots.txt", "text": "User-agent: *\nDisallow: /", "etag": "3", "contentType": "text/plain" },
     { "uri": "/test", "text": "**Markdown** _text_.", "etag": "6", "contentType": "text/markdown" },
     { "uri": "/testfile", "file": "testfile.md", "gzip": "testfile.md.gz", "etag": "7", "contentType": "text/markdown" },
-    { "uri": "/html", "file": "testhtml.html", "etag": "1", "contentType": "text/html" }
+    { "uri": "/html", "file": "testhtml.html", "etag": "1", "contentType": "text/html" },
+    { "uri": "/htmljs", "file": "testhtmljs.html", "contentType": "text/html", "scriptSrc": "sha256-zblFe6Q+8iqQFjVNZUaCWdUTV7fntP+AiW4hSfOH3pw=" },
+    { "uri": "/htmljsfile", "file": "testhtmljsfile.html", "etag": "1", "contentType": "text/html" },
+    { "uri": "/testhtmljsfile.js", "file": "testhtmljsfile.js", "etag": "1", "contentType": "application/javascript" },
 ]

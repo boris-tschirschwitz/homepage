@@ -61,6 +61,7 @@ class Server: Database {
 
 enum ContentType: String, Decodable {
     case html = "text/html"
+    case javascript = "application/javascript"
     case markdown = "text/markdown"
     case plain = "text/plain"
 }
@@ -68,7 +69,7 @@ enum ContentType: String, Decodable {
 extension ContentType {
     var options: String {
         switch self {
-        case .html, .markdown, .plain: return "; charset=utf-8"
+        case .html, .javascript, .markdown, .plain: return "; charset=utf-8"
         }
     }
 
@@ -92,6 +93,7 @@ struct Page: Decodable {
     let source: PageSource
     let etag: String?
     let contentType: ContentType
+    let scriptSrc: String?
 
     enum CodingKeys: String, CodingKey {
         case uri
@@ -100,12 +102,13 @@ struct Page: Decodable {
         case gzip
         case etag
         case contentType
+        case scriptSrc
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.uri = try container.decode(String.self, forKey: .uri)
-        self.etag = try container.decode(String.self, forKey: .etag)
+        self.etag = try container.decodeIfPresent(String.self, forKey: .etag)
         self.contentType = try container.decode(ContentType.self, forKey: .contentType)
         if let text = try container.decodeIfPresent(String.self, forKey: .text) {
             self.source = .text(text)
@@ -116,6 +119,7 @@ struct Page: Decodable {
             }
             self.source = .file(files)
         }
+        self.scriptSrc = try container.decodeIfPresent(String.self, forKey: .scriptSrc)
     }
 }
 

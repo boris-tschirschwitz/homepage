@@ -56,7 +56,7 @@ class HTTPHandler: ChannelInboundHandler {
                 self.ifPageIsAvailable(request, database: self.database) { (page) in
                     self.ifCacheIsInvalid(request, page: page) {
                         self.choosingContentEncoding(request, page.source) { (contentEncoding, data) in
-                            return ResponseBuilder(request, .ok, data: data, contentType: page.contentType, contentEncoding: contentEncoding)
+                            return ResponseBuilder(request, .ok, data: data, contentType: page.contentType, contentEncoding: contentEncoding, scriptSrc: page.scriptSrc)
                         }
                     }
                 }
@@ -147,7 +147,7 @@ class HTTPHandler: ChannelInboundHandler {
         context.flush()
     }
 
-    static func httpResponseHead(request: HTTPRequestHead, status: HTTPResponseStatus, contentType: ContentType, headers: HTTPHeaders = HTTPHeaders()) -> HTTPResponseHead {
+    static func httpResponseHead(request: HTTPRequestHead, status: HTTPResponseStatus, contentType: ContentType, headers: HTTPHeaders = HTTPHeaders(), scriptSrc: String?) -> HTTPResponseHead {
         var head = HTTPResponseHead(version: request.version, status: status, headers: headers)
         let connectionHeaders: [String] = head.headers[canonicalForm: "connection"].map { $0.lowercased() }
 
@@ -166,7 +166,11 @@ class HTTPHandler: ChannelInboundHandler {
             }
         }
         head.headers.add(name: "content-type", value: contentType.headerCode)
-        head.headers.add(name: "content-security-policy", value: "default-src 'self'")
+        if let source = scriptSrc {
+            head.headers.add(name: "content-security-policy", value: "script-src '\(source)'")
+        } else {
+            head.headers.add(name: "content-security-policy", value: "default-src 'self'")
+        }
         head.headers.add(name: "x-content-type-options", value: "'nosniff'")
         return head
     }
@@ -204,15 +208,15 @@ extension HTTPHandler {
         let data: Data
         var head: HTTPResponseHead
 
-        init(_ request: HTTPRequestHead, _ status: HTTPResponseStatus, text: String = "", contentType: ContentType = .plain) {
+        init(_ request: HTTPRequestHead, _ status: HTTPResponseStatus, text: String = "", contentType: ContentType = .plain, scriptSrc: String? = nil) {
             self.request = request
-            self.head = HTTPHandler.httpResponseHead(request: request, status: status, contentType: contentType)
+            self.head = HTTPHandler.httpResponseHead(request: request, status: status, contentType: contentType, scriptSrc: scriptSrc)
             self.data = text.data(using: .utf8)!
         }
 
-        init(_ request: HTTPRequestHead, _ status: HTTPResponseStatus, data: Data, contentType: ContentType = .plain, contentEncoding: ContentEncoding = .text) {
+        init(_ request: HTTPRequestHead, _ status: HTTPResponseStatus, data: Data, contentType: ContentType = .plain, contentEncoding: ContentEncoding = .text, scriptSrc: String? = nil) {
             self.request = request
-            self.head = HTTPHandler.httpResponseHead(request: request, status: status, contentType: contentType)
+            self.head = HTTPHandler.httpResponseHead(request: request, status: status, contentType: contentType, scriptSrc: scriptSrc)
             self.data = data
         }
 
